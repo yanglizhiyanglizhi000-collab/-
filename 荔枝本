@@ -1,0 +1,223 @@
+-- 创建主UI容器
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ScriptHubUI"
+screenGui.Parent = playerGui
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- 创建主窗口
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 400, 0, 450)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
+mainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- 添加圆角
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 8)
+corner.Parent = mainFrame
+
+-- 创建标题栏
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 30)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 8)
+titleCorner.Parent = titleBar
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 1, 0)
+title.BackgroundTransparency = 1
+title.Text = "神青脚本中心 V5"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.Parent = titleBar
+
+-- 创建关闭按钮
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -30, 0, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 14
+closeButton.Parent = titleBar
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- 创建选项卡框架
+local tabsFrame = Instance.new("Frame")
+tabsFrame.Size = UDim2.new(0, 100, 1, -30)
+tabsFrame.Position = UDim2.new(0, 0, 0, 30)
+tabsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+tabsFrame.BorderSizePixel = 0
+tabsFrame.Parent = mainFrame
+
+-- 创建内容框架
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -100, 1, -30)
+contentFrame.Position = UDim2.new(0, 100, 0, 30)
+contentFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = mainFrame
+
+-- 创建选项卡按钮
+local function createTab(name, text)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Size = UDim2.new(1, 0, 0, 40)
+    tabButton.Position = UDim2.new(0, 0, 0, (#tabsFrame:GetChildren() - 1) * 40)
+    tabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    tabButton.BorderSizePixel = 0
+    tabButton.Text = text
+    tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    tabButton.Font = Enum.Font.Gotham
+    tabButton.TextSize = 12
+    tabButton.Name = name
+    tabButton.Parent = tabsFrame
+    
+    return tabButton
+end
+
+-- 创建内容页面
+local function createContentPage(name)
+    local page = Instance.new("ScrollingFrame")
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.Position = UDim2.new(0, 0, 0, 0)
+    page.BackgroundTransparency = 1
+    page.ScrollBarThickness = 5
+    page.Visible = false
+    page.Name = name
+    page.Parent = contentFrame
+    
+    local uiListLayout = Instance.new("UIListLayout")
+    uiListLayout.Padding = UDim.new(0, 5)
+    uiListLayout.Parent = page
+    
+    return page
+end
+
+-- 创建选项卡和内容
+local infoTab = createTab("InfoTab", "信息")
+local featuresTab = createTab("FeaturesTab", "普通功能")
+
+local infoPage = createContentPage("InfoPage")
+local featuresPage = createContentPage("FeaturesPage")
+
+-- 默认显示信息页
+infoPage.Visible = true
+
+-- 选项卡切换逻辑
+infoTab.MouseButton1Click:Connect(function()
+    infoPage.Visible = true
+    featuresPage.Visible = false
+    infoTab.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    featuresTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+end)
+
+featuresTab.MouseButton1Click:Connect(function()
+    infoPage.Visible = false
+    featuresPage.Visible = true
+    infoTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    featuresTab.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+end)
+
+-- 创建UI元素函数
+local function createSection(parent, title, padding)
+    local section = Instance.new("Frame")
+    section.Size = UDim2.new(1, -20, 0, 0)
+    section.Position = UDim2.new(0, 10, 0, 0)
+    section.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    section.BorderSizePixel = 0
+    section.AutomaticSize = Enum.AutomaticSize.Y
+    section.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 5)
+    corner.Parent = section
+    
+    local sectionTitle = Instance.new("TextLabel")
+    sectionTitle.Size = UDim2.new(1, 0, 0, 30)
+    sectionTitle.Position = UDim2.new(0, 0, 0, 0)
+    sectionTitle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    sectionTitle.BorderSizePixel = 0
+    sectionTitle.Text = "  " .. title
+    sectionTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    sectionTitle.Font = Enum.Font.GothamBold
+    sectionTitle.TextSize = 12
+    sectionTitle.TextXAlignment = Enum.TextXAlignment.Left
+    sectionTitle.Parent = section
+    
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 5)
+    titleCorner.Parent = sectionTitle
+    
+    local content = Instance.new("Frame")
+    content.Size = UDim2.new(1, 0, 0, 0)
+    content.Position = UDim2.new(0, 0, 0, 30)
+    content.BackgroundTransparency = 1
+    content.AutomaticSize = Enum.AutomaticSize.Y
+    content.Parent = section
+    
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, padding or 5)
+    layout.Parent = content
+    
+    return content
+end
+
+local function createLabel(parent, text)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -10, 0, 20)
+    label.Position = UDim2.new(0, 5, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(200, 200, 200)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = parent
+    
+    return label
+end
+
+local function createButton(parent, text, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 30)
+    button.Position = UDim2.new(0, 5, 0, 0)
+    button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    button.BorderSizePixel = 0
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 12
+    button.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 5)
+    corner.Parent = button
+    
+    button.MouseButton1Click:Connect(callback)
+    
+    return button
+end
+
+local function createToggle(parent, text, default, callback)
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(1, -10, 0, 30)
+    toggleFrame.Position = UDim2.new(0, 5, 0, 0)
+    toggleFrame.BackgroundTransparency = 1
+    toggleFrame.Parent = parent
+    
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.n
